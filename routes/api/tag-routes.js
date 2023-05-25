@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Tag, Product, ProductTag } = require('../../models');
+const { Tag, Product } = require('../../models');
 
 // The `/api/tags` endpoint
 
@@ -10,23 +10,24 @@ router.get('/', async (req, res) => {
     const tagData = await Tag.findAll({
       include: [{ model: Product }],
     });
+    res.status(200).json(tagData);
   } catch (error) {
     res.status(500).json({ message: "Tags not found!"})};
 });
 
-router.get('/:id', async (req, res) => {
+router.get("/:id", async (req, res) => {
   // find a single tag by its `id`
-  // be sure to include its associated Product data
   try {
     const tagData = await Tag.findByPk(req.params.id, {
       include: [{ model: Product }],
     });
     if (!tagData) {
-      res.status(404).json({ message: "No tag found with this id!"});
+      res.status(404).json({ message: "No tag found with this id!" });
       return;
     }
-  } catch (error) {
-    res.status(500).json({ message: "Tag not found!"});
+    res.status(200).json(tagData);
+  } catch (err) {
+    res.status(500).json({ message: "Tag not found!" });
   }
 });
 
@@ -40,29 +41,27 @@ router.post('/', async (req, res) => {
   }
 });
 
-router.put('/:id', async (req, res) => {
-  // update a tag's name by its `id` value
+router.put("/:id", async (req, res) => {
   try {
     const updated = await Tag.update(req.body, {
       where: { id: req.params.id },
     });
-     !updated[0] ? res.status(400).json({ message: "No tag found with this id!" })
-     : res.status(200).json(updated);
-  } catch (error) {
+    !updated[0]
+      ? res.status(404).json({ message: "No tag found with this id!" })
+      : res.status(200).json(updated);
+  } catch (err) {
     res.status(500).json({ message: "Tag update failed" });
   }
 });
 
-router.delete('/:id', async (req, res) => {
-  // delete on tag by its `id` value
+router.delete("/:id", async (req, res) => {
   try {
-    const deleted = await Tag.destroy(req.body, {
-      where: { id: req.params.id },
-    });
-     !deleted ? res.status(400).json({ message: "No tag found with this id!" })
-     : res.status(200).json(deleted);
-  } catch (error) {
-    res.status(500).json({ message: "Tag delete failed" });
+    const deleted = await Tag.destroy({ where: { id: req.params.id } });
+    !deleted
+      ? res.status(404).json({ message: "No tag found with this id!" })
+      : res.status(200).json(deleted);
+  } catch (err) {
+    res.status(500).json({ message: "Tag deletion failed" });
   }
 });
 

@@ -23,7 +23,7 @@
 
   ## Assets:
 
-  ### Link to walkthrough video for application      
+  ### Link to walkthrough video for application https://drive.google.com/file/d/1unyMCbVPLGdgSSIP6aTRSurBFeIbv-qK/view    
 
   ## Usage:
   ### Users can create a database, seed it with data, and sync Sequelize models to MySQL database. 
